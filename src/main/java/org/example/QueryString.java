@@ -12,4 +12,11 @@ public class QueryString {
         this.value = value;
     }
 
+    public boolean exists(String key) {
+        return this.key.equals(key);
+    }
+
+    public String getValue() {
+        return this.value;
+    }
 }

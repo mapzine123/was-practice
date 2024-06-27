@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.calculater.Calculator;
+import org.example.calculater.PositiveNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,16 +35,17 @@ public class CustomWebApplicationServer {
                     BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)); // line by line으로 읽어오기 위함
                     DataOutput dos = new DataOutputStream(out);
 
-                    String line;
-                    while((line = br.readLine()) != "") {
-                        System.out.println(line);
-                        /**
-                         * GET /calculate?oparand1=11&oparator=*&oparand2=55 HTTP/1.1
-                         * Host: localhost:8080
-                         * Connection: Keep-Alive
-                         * User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
-                         * Accept-Encoding: br,deflate,gzip,x-gzip
-                         */
+                    HttpRequest httpRequest = new HttpRequest(br);
+
+                    if (httpRequest.isGetRequest() && httpRequest.matchPath("/calculate")) {
+                        QueryStrings queryStrings = httpRequest.getQueryString();
+
+                        int operand1 = Integer.parseInt(queryStrings.getValue("operand1"));
+                        String operator = queryStrings.getValue("operator");
+                        int operand2 = Integer.parseInt(queryStrings.getValue("operand2"));
+
+                        int result = Calculator.calculate(new PositiveNumber(operand1), operator, new PositiveNumber(operand2));
+
                     }
                 }
             }

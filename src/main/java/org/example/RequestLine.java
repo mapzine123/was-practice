@@ -9,7 +9,7 @@ import java.util.Objects;
 public class RequestLine {
     private final String method; // GET
     private final String urlPath; ///calculate?oparand1=11&oparator=*&oparand2=55
-    private String queryString;
+    private QueryStrings queryStrings;
 
     public RequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
@@ -20,27 +20,39 @@ public class RequestLine {
         this.urlPath = urlPathTokens[0]; // /calculate
 
         if(urlPathTokens.length == 2) {
-            this.queryString = urlPathTokens[1]; // oparand1=11&oparator=*&oparand2=55
+            this.queryStrings = new QueryStrings(urlPathTokens[1]); // oparand1=11&oparator=*&oparand2=55
         }
 
 
     }
 
-    public RequestLine(String method, String urlPath, String queryString) {
+    public RequestLine(String method, String urlPath, String queryStrings) {
         this.method = method;
         this.urlPath = urlPath;
-        this.queryString = queryString;
+        this.queryStrings = new QueryStrings(queryStrings);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof RequestLine that)) return false;
-        return Objects.equals(method, that.method) && Objects.equals(urlPath, that.urlPath) && Objects.equals(queryString, that.queryString);
+        return Objects.equals(method, that.method) && Objects.equals(urlPath, that.urlPath) && Objects.equals(queryStrings, that.queryStrings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(method, urlPath, queryString);
+        return Objects.hash(method, urlPath, queryStrings);
+    }
+
+    public boolean isGetRequest() {
+        return "GET".equals(this.method);
+    }
+
+    public boolean matchPath(String requestPath) {
+        return urlPath.equals(requestPath);
+    }
+
+    public QueryStrings getQueryStrings() {
+        return this.queryStrings;
     }
 }
