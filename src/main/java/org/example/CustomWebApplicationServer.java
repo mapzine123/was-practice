@@ -10,6 +10,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Http Protocol이 어떻게 생겼는지 알기
+ * 규약이 있기 때문에 규악에 맞춰서 split을 할 수 있었고
+ * 규약이 있기 때문에 규약에 맞춰서 response를 전달할 수 있었다.
+ */
+
 public class CustomWebApplicationServer {
     private final int port;
 
@@ -33,7 +39,7 @@ public class CustomWebApplicationServer {
                  */
                 try (InputStream in = clientSocket.getInputStream(); OutputStream out = clientSocket.getOutputStream()) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)); // line by line으로 읽어오기 위함
-                    DataOutput dos = new DataOutputStream(out);
+                    DataOutputStream dos = new DataOutputStream(out);
 
                     HttpRequest httpRequest = new HttpRequest(br);
 
@@ -46,6 +52,12 @@ public class CustomWebApplicationServer {
 
                         int result = Calculator.calculate(new PositiveNumber(operand1), operator, new PositiveNumber(operand2));
 
+                        byte[] body = String.valueOf(result).getBytes();
+
+                        // response 세팅
+                        HttpResponse response = new HttpResponse(dos);
+                        response.response200Header("application/json", body.length);
+                        response.responseBody(body);
                     }
                 }
             }
