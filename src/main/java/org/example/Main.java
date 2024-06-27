@@ -1,19 +1,16 @@
 package org.example;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import java.io.IOException;
+
+// path : GET /calculate?oparand1=11&oparator=*&oparand2=55
+
+/**
+ * 1. 사용자 요청을 메인 Thread가 처리하도록 한다.
+ * 2. 사용자 요청이 들어올 때 마다 Thread를 새로 생성해서 사용자 요청을 처리하도록 한다.
+ * 3. ThreadPool을 적용해 안정적인 서비스가 가능하도록 한다.
+ */
 public class Main {
-    public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
-
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
-
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+    public static void main(String[] args) throws IOException {
+        new CustomWebApplicationServer(8080).start();
     }
 }
