@@ -1,6 +1,6 @@
-package org.calculater.operator;
+package org.example.calculater.operator;
 
-import org.calculater.PositiveNumber;
+import org.example.calculater.PositiveNumber;
 
 public class AdditionOperator implements NewArithmeticOperator {
     @Override

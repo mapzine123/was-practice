@@ -1,6 +1,6 @@
-package org.calculater.operator;
+package org.example.calculater.operator;
 
-import org.calculater.PositiveNumber;
+import org.example.calculater.PositiveNumber;
 
 /**
  * 0으로 나누면 예외 발생 상황 처리

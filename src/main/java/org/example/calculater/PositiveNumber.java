@@ -1,4 +1,4 @@
-package org.calculater;
+package org.example.calculater;
 
 /**
  * 양수만 연산 가능한 요구사항을 처리하기 위한 V.O

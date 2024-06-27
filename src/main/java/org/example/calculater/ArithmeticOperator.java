@@ -1,4 +1,4 @@
-package org.calculater;
+package org.example.calculater;
 
 import java.util.Arrays;
 
