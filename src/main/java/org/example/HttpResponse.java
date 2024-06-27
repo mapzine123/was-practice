@@ -18,9 +18,14 @@ public class HttpResponse {
     // Header값 세팅
     public void response200Header(String contentType, int lengthOfBodyContent) {
         try {
+            // Status
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type " + contentType + ";charset=utf-8\r\n");
+
+            // Header
+            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+
+            // Blank line
             dos.writeBytes("\r\n");
         } catch(IOException e) {
             logger.error(e.getMessage());
