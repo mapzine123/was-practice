@@ -35,31 +35,16 @@ public class CustomWebApplicationServer {
             while ((clientSocket = serverSocket.accept()) != null) { // ServerSocket이 Client를 기다리게 한다.
                 logger.info("[CustomWebApplicationServer] client connected!");
                 /**
-                 * 1. 사용자 요청을 메인 Thread가 처리하도록 한다.
+                 * step 1. 사용자 요청을 메인 Thread가 처리하도록 한다.
+                 * ㄴ 만약 메인 Thread가 block이 걸리면, 다음 요청자는 게속 기다려야함
+                 *
+                 * step 2. 사용자 요청이 들어올 때 마다 Thread를 새로 생성해서 사용자 요청을 처리하도록 한다.
+                 * ㄴ Runable 클래스를 만들어서 하는 일을 thread로 넘김
+                 * ㄴ 근데 Thread는 생성될 때 마다 독립적인 static memory 공간을 할당받음
+                 * ㄴ 이런 메모리를 할당받는 작업은 비싼 작업임
+                 * ㄴ 사용자의 요청이 올 때 마다 Thread를 생성하게 되면 성능이 떨어짐
                  */
-                try (InputStream in = clientSocket.getInputStream(); OutputStream out = clientSocket.getOutputStream()) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)); // line by line으로 읽어오기 위함
-                    DataOutputStream dos = new DataOutputStream(out);
-
-                    HttpRequest httpRequest = new HttpRequest(br);
-
-                    if (httpRequest.isGetRequest() && httpRequest.matchPath("/calculate")) {
-                        QueryStrings queryStrings = httpRequest.getQueryString();
-
-                        int operand1 = Integer.parseInt(queryStrings.getValue("operand1"));
-                        String operator = queryStrings.getValue("operator");
-                        int operand2 = Integer.parseInt(queryStrings.getValue("operand2"));
-
-                        int result = Calculator.calculate(new PositiveNumber(operand1), operator, new PositiveNumber(operand2));
-
-                        byte[] body = String.valueOf(result).getBytes();
-
-                        // response 세팅
-                        HttpResponse response = new HttpResponse(dos);
-                        response.response200Header("application/json", body.length);
-                        response.responseBody(body);
-                    }
-                }
+                new Thread(new ClientRequestHandler(clientSocket)).start();
             }
         }
     }
