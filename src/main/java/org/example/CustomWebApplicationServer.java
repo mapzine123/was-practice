@@ -9,6 +9,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Http Protocol이 어떻게 생겼는지 알기
@@ -18,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 
 public class CustomWebApplicationServer {
     private final int port;
+
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     private static final Logger logger = LoggerFactory.getLogger(CustomWebApplicationServer.class);
 
@@ -43,8 +47,12 @@ public class CustomWebApplicationServer {
                  * ㄴ 근데 Thread는 생성될 때 마다 독립적인 static memory 공간을 할당받음
                  * ㄴ 이런 메모리를 할당받는 작업은 비싼 작업임
                  * ㄴ 사용자의 요청이 올 때 마다 Thread를 생성하게 되면 성능이 떨어짐
+                 *
+                 * step 3. Thread Pool을 적용해 안정적인 서비스가 가능하도록 한다.
+                 * ㄴ 여러 Thread를 미리 생성해두고 필요할 때 재사용하여 작업을 수행하는 방식
+                 * ㄴ 자원을 효율적으로 관리하고 프로그램의 성능을 최적화하는데 도움을 줌
                  */
-                new Thread(new ClientRequestHandler(clientSocket)).start();
+                executorService.execute(new ClientRequestHandler(clientSocket));
             }
         }
     }
